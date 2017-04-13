@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <errno.h>  
 
 #include "pdp_rw.h"
 
@@ -12,7 +13,7 @@ typedef struct Commands
     void (*do_command)();
 }Commands;
 
-void load_file ();
+void load_file (FILE* fin);
 void mem_dump (adr start, word val);
 void run_program ();
 void do_halt ();
@@ -21,24 +22,34 @@ void do_add ();
 void do_unknown ();
 
 
-int main()
+int main(int argc, char* argv[])
 {
-    load_file ();
+    FILE* fin = fopen (argv[1], "r");
+
+    if(errno)
+	{
+		perror("Error");
+		exit(1);
+	}
+
+    load_file (fin);
     //mem_dump (0x0200, 0x000c);
     run_program ();
+    
+    fclose (fin);
 }
-void load_file ()
+void load_file (FILE* fin)
 {
     adr a = 0;
     int n = 0;
     byte val = 0;    
     
-    scanf ("%x", &a);
-    scanf ("%x", &n);
+    fscanf (fin, "%x", &a);
+    fscanf (fin, "%x", &n);
 
     while (n)
     {
-        scanf ("%hhx", &val);
+        fscanf (fin, "%hhx", &val);
         b_write (a, val);
         a = a + 1;
         n--;
