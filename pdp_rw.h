@@ -1,7 +1,12 @@
+#ifndef PDP_RW_H
+#define PDP_RW_H
+
+
 typedef unsigned char byte;
 typedef short int word;
 typedef int adr;
 byte mem[64 * 1024];
+word reg[8] = {};
 
 void b_write (adr a, byte val);
 byte b_read (adr a);
@@ -66,3 +71,5 @@ void test_mem()
     w = w_read(0);
     assert (w == we);
 }
+
+#endif
